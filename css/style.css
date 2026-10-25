@@ -1,0 +1,331 @@
+/* =====================================================================
+   个人数字名片 · 自定义样式
+   说明：
+     - 布局、间距、颜色等原子类由 TailwindCSS 提供；
+     - 本文件只负责「组件级」样式：时间线、卡片动效、标签筛选器、
+       空状态等，便于集中维护与复用。
+   ===================================================================== */
+
+/* ---------- 通用：空状态占位 ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.75rem;
+  color: #94a3b8;
+  text-align: center;
+  background: #f8fafc;
+  /* 放在网格容器中时横跨整行，避免被压缩到单个网格列 */
+  grid-column: 1 / -1;
+}
+
+/* ===================== 模块1：时间线 ===================== */
+.timeline {
+  position: relative;
+}
+
+/* 竖向主线 */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;              /* 与 marker 中心（8px）对齐 */
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 2.5rem;   /* 给左侧圆点留出空间 */
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  outline: none;          /* 键盘聚焦样式见下方 focus-visible */
+}
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 时间节点圆点 */
+.timeline-marker {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid #6366f1;
+  z-index: 1;
+  transition: background 0.2s;
+}
+.timeline-item.is-open .timeline-marker {
+  background: #6366f1;
+}
+
+/* 内容卡片 */
+.timeline-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* hover 高亮（鼠标悬停 + 键盘聚焦） */
+.timeline-item:hover .timeline-card,
+.timeline-item:focus-visible .timeline-card {
+  border-color: #c7d2fe;
+  box-shadow: 0 8px 20px -8px rgba(99, 102, 241, 0.35);
+}
+
+/* 备注内容：默认收起，展开时平滑过渡 */
+.timeline-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.timeline-item.is-open .timeline-detail {
+  max-height: 400px;      /* 足够容纳备注文本 */
+}
+
+/* 展开箭头 */
+.timeline-chevron {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+.timeline-item.is-open .timeline-chevron {
+  transform: rotate(180deg);
+}
+
+/* ===================== 模块2：小工具演示 =====================
+   排版借鉴参考站「工具实验室」：顶部等宽标签 + 交互区卡片；
+   配色沿用本页浅色商务风（slate + indigo）。 */
+
+.tool-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.tool-card:hover {
+  border-color: #c7d2fe;
+  box-shadow: 0 12px 28px -14px rgba(99, 102, 241, 0.28);
+}
+
+.tool-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.tool-card__label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #818cf8;
+}
+.tool-card__title {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* 模式切换（专注 / 短休息 / 长休息） */
+.tool-modes {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.tool-mode {
+  flex: 1;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tool-mode:hover {
+  border-color: #6366f1;
+  color: #4f46e5;
+}
+.tool-mode.active {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+
+/* 计时数字（等宽、固定字宽防抖动） */
+.tool-time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* 进度条 */
+.tool-progress {
+  height: 6px;
+  margin: 1rem 0 1.25rem;
+  border-radius: 9999px;
+  background: #eef2ff;
+  overflow: hidden;
+}
+.tool-progress__bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  background: #6366f1;
+  transition: width 0.3s linear;
+}
+
+/* 操作按钮 */
+.tool-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.tool-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tool-btn:hover {
+  border-color: #6366f1;
+  color: #4f46e5;
+}
+.tool-btn--primary {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+.tool-btn--primary:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #fff;
+}
+
+/* 统计文本 */
+.tool-stats {
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* 待办：输入区 */
+.tool-todo-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.tool-todo-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.tool-todo-form input:focus {
+  border-color: #6366f1;
+}
+.tool-todo-form input::placeholder {
+  color: #94a3b8;
+}
+.tool-todo-form .tool-btn {
+  flex: 0 0 auto;
+}
+
+/* 待办：列表 */
+.tool-todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid #eef2ff;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+}
+.todo-toggle {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.todo-item.done .todo-toggle {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #fff;
+}
+.todo-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: #334155;
+  word-break: break-all;
+}
+.todo-item.done .todo-text {
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+.todo-del {
+  flex: 0 0 auto;
+  border: none;
+  background: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0.125rem;
+  transition: color 0.2s;
+}
+.todo-del:hover {
+  color: #ef4444;
+}
+.todo-empty {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
