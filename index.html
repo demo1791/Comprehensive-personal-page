@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="个人数字名片 - 个人经历时间线与作品画廊" />
+  <meta name="description" content="个人数字名片 - 个人经历与在线工具作品集" />
   <title>个人数字名片</title>
 
   <!--
@@ -26,7 +26,7 @@
       <!-- 站内导航锚点 -->
       <div class="hidden gap-6 text-sm font-medium text-slate-600 sm:flex">
         <a href="#timeline" class="transition hover:text-indigo-600">个人经历</a>
-        <a href="#tools" class="transition hover:text-indigo-600">小工具</a>
+        <a href="#tools" class="transition hover:text-indigo-600">作品集</a>
       </div>
     </nav>
   </header>
@@ -50,10 +50,11 @@
       <div id="timeline-container"></div>
     </section>
 
-    <!-- ===================== 模块2：小工具演示（可交互） ===================== -->
+    <!-- ===================== 模块2：作品集 · 在线工具（可交互） ===================== -->
     <section id="tools" class="mt-20 scroll-mt-20">
-      <h2 class="mb-6 text-2xl font-bold text-slate-900">小工具演示</h2>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <h2 class="text-2xl font-bold text-slate-900">作品集 · 在线工具</h2>
+      <p class="mt-2 text-sm text-slate-500">个人工具开发实践，全部可在线直接使用。</p>
+      <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
 
         <!-- 工具 1：番茄专注钟 -->
         <div class="tool-card">
@@ -78,20 +79,75 @@
           <p class="tool-stats" id="pomo-stats">已完成 0 个番茄 🍅</p>
         </div>
 
-        <!-- 工具 2：待办清单 -->
+        <!-- 工具 2：待办清单（进阶版） -->
         <div class="tool-card">
           <div class="tool-card__head">
             <span class="tool-card__label">TOOL · 02</span>
-            <span class="tool-card__title">待办清单</span>
+            <span class="tool-card__title">待办清单 · 进阶</span>
+          </div>
+
+          <div class="tool-modes" id="todo-filters" role="tablist" aria-label="状态筛选">
+            <button class="tool-mode active" data-filter="all">全部</button>
+            <button class="tool-mode" data-filter="active">未完成</button>
+            <button class="tool-mode" data-filter="done">已完成</button>
           </div>
 
           <form id="todo-form" class="tool-todo-form">
-            <input id="todo-input" type="text" placeholder="添加一个待办…" autocomplete="off" />
+            <input id="todo-input" type="text" placeholder="添加待办…" autocomplete="off" />
+            <select id="todo-priority" class="tool-select" title="优先级">
+              <option value="medium">中</option>
+              <option value="high">高</option>
+              <option value="low">低</option>
+            </select>
             <button type="submit" class="tool-btn tool-btn--primary">添加</button>
           </form>
 
           <ul id="todo-list" class="tool-todo-list"></ul>
           <p class="tool-stats" id="todo-stats"></p>
+        </div>
+
+        <!-- 工具 3：Markdown 笔记 -->
+        <div class="tool-card">
+          <div class="tool-card__head">
+            <span class="tool-card__label">TOOL · 03</span>
+            <span class="tool-card__title">Markdown 笔记</span>
+          </div>
+
+          <div class="note-list-head">
+            <span class="note-list-title">全部笔记</span>
+            <button id="note-new" class="tool-btn tool-btn--primary tool-btn--sm">新建</button>
+          </div>
+
+          <ul id="note-list" class="note-list"></ul>
+
+          <textarea id="note-editor" class="note-editor" placeholder="在这里写 Markdown…" spellcheck="false"></textarea>
+
+          <div class="note-toolbar">
+            <button id="note-toggle" class="tool-btn tool-btn--sm">预览</button>
+            <span id="note-status" class="note-status"></span>
+          </div>
+
+          <div id="note-preview" class="note-preview" hidden></div>
+        </div>
+
+        <!-- 工具 4：天气查询 -->
+        <div class="tool-card">
+          <div class="tool-card__head">
+            <span class="tool-card__label">TOOL · 04</span>
+            <span class="tool-card__title">天气查询</span>
+          </div>
+
+          <form id="weather-form" class="tool-todo-form">
+            <input id="weather-input" type="text" placeholder="输入城市名，如：武汉" autocomplete="off" />
+            <button type="submit" class="tool-btn tool-btn--primary">查询</button>
+            <button id="weather-locate" type="button" class="tool-btn">定位</button>
+          </form>
+
+          <div id="weather-body" class="weather-body">
+            <p class="weather-hint">输入城市名查询，或点「定位」获取当前位置天气。</p>
+          </div>
+
+          <p class="tool-stats" id="weather-status"></p>
         </div>
 
       </div>
@@ -113,8 +169,8 @@
   <!--
     脚本分层：
       1. js/data.js  —— 业务数据（后续修改内容只需改这里，无需改动页面结构）
-      2. js/main.js  —— 渲染 + 交互逻辑（时间线 / 作品画廊）
-      3. js/tools.js —— 小工具演示交互（番茄钟 / 待办清单）
+      2. js/main.js  —— 渲染 + 交互逻辑（时间线）
+      3. js/tools.js —— 作品集在线工具（番茄钟 / 待办 / 笔记 / 天气）
   -->
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
